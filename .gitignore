@@ -1,0 +1,5 @@
+Z80/RNG.tap
+*.tap
+Artist/Source/INPUTS.symbol.txt
+esxDOS/errors.inc
+esxDOS/esxdos_api.txt

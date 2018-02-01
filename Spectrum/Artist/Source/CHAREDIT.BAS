@@ -1,0 +1,152 @@
+1 RUN 9000
+20 FOR m=1 TO 8: LET byte=0: FOR n=1 TO 8
+25 IF c(n+xd,m+yd)=1 THEN LET byte=byte+2^(8-n)
+26 NEXT n: POKE addr-1+m,byte: NEXT m: RETURN 
+30 REM fetch routine
+35 FOR m=1 TO 8: LET pe=PEEK (addr-1+m): FOR n=1 TO 8
+40 LET va=2^(8-n): IF pe-va>=0 THEN LET pe=pe-va: LET c(n+xd,m+yd)=1
+45 NEXT n: NEXT m: RETURN 
+100 LET xd=0: LET yd=0: DIM c(16,16)
+105 LET cl=140: IF c$="u" THEN LET cl=150
+110 LET z$=a$(1): GO SUB cl: GO SUB 30
+115 IF LEN a$>1 THEN LET z$=a$(2): LET xd=8: GO SUB cl: GO SUB 30
+120 IF LEN a$>2 THEN LET z$=a$(3): LET xd=0: LET yd=8: GO SUB cl: GO SUB 30
+125 IF LEN a$>3 THEN LET z$=a$(4): LET xd=8: GO SUB cl: GO SUB 30
+130 RETURN 
+140 REM find address of character if char set
+145 LET addr=base+(8*(( CODE z$)-32)): RETURN 
+150 REM find address of character if udg set
+155 LET addr=USR z$: RETURN 
+160 REM put contents of c onto grid
+165 FOR m=1 TO 16: FOR n=1 TO 16: PRINT AT 5+m,n;("\::" AND c(n,m)=1);(" " AND NOT c(n,m));: PLOT INVERSE (1-c(n,m));152+n,128-m: NEXT n: PRINT : NEXT m
+170 PLOT 7,0: DRAW 129,0: PLOT 72,0: DRAW 0,128: PLOT 7,64: DRAW 128,0: RETURN 
+180 REM ask for character/udg
+185 INPUT ("characters?:"); LINE a$
+190 IF a$="" OR LEN a$>4 THEN GO TO 185
+195 LET c$="c": IF a$>="A" AND a$<="S" THEN INPUT ("Character(c)/UDG(u)?:"); LINE c$: IF c$<>"u" THEN IF c$<>"c" THEN GO TO 195
+200 RETURN 
+205 REM call poke
+210 LET co=1: LET xd=0: LET yd=0
+215 LET z$=a$(co): IF c$="c" THEN GO SUB 140
+220 IF c$="u" THEN GO SUB 150
+225 GO SUB 10
+230 IF co=LEN a$ THEN RETURN 
+235 LET co=co+1
+240 IF co=2 THEN LET xd=8: GO TO 215
+245 IF co=3 THEN LET yd=8: LET xd=0: GO TO 215
+250 LET xd=8: LET yd=8: GO TO 215
+300 REM invert cell
+305 LET pp=0: LET qq=0
+310 IF x>8 THEN LET pp=8
+315 IF y>8 THEN LET qq=8
+320 FOR m=1 TO 8: FOR n=1 TO 8: PLOT INVERSE c(n+pp,m+qq);152+n+pp,128-m-qq: LET c(n+pp,m+qq)=ABS (1-c(n+pp,m+qq)): PRINT AT m+5+qq,n+pp;(" " AND NOT c(n+pp,m+qq));("\::" AND c(n+pp,m+qq)): NEXT n: NEXT m: GO SUB 795
+325 PLOT 72,0: DRAW 0,128: PLOT 7,64: DRAW 128,0: RETURN 
+770 LET c(x,y)=0: PRINT AT y+5,x;" ": GO SUB 795
+775 PLOT INVERSE 1;152+x,128-y: RETURN 
+780 LET c(x,y)=1: PRINT AT y+5,x;"\::": GO SUB 795
+785 PLOT 152+x,128-y: RETURN 
+795 PRINT OVER 1;AT y+5,x;"+": RETURN 
+800 PRINT OVER 1;AT y+5,x;"+";AT q+5,p;"+": LET p=x: LET q=y
+805 LET x=x+(INKEY$="p" AND x<16)-(INKEY$="o" AND x>1)
+810 LET y=y+(INKEY$="a" AND y<16)-(INKEY$="q" AND y>1)
+815 IF INKEY$="g" THEN GO SUB 920: GO SUB 795
+820 IF INKEY$="c" THEN GO SUB 910: GO SUB 795
+821 IF INKEY$="5" THEN GO SUB 5500
+825 IF INKEY$=CHR$ 7 THEN RETURN 
+830 IF INKEY$=" " THEN IF c(x,y)=0 THEN GO SUB 780
+835 IF INKEY$="i" THEN GO SUB 300
+836 IF INKEY$="R" THEN DIM c(16,16): GO SUB 160: GO SUB 795
+840 IF INKEY$=CHR$ 12 THEN IF c(x,y)=1 THEN GO SUB 770
+844 IF p=x AND q=y THEN GO TO 805
+845 GO TO 800
+900 REM tie em together
+905 REM get chars,poke c
+910 GO SUB 180: GO SUB 990: GO SUB 205: GO SUB 1000: DIM c(16,16): RETURN 
+915 REM peek chars to c
+920 GO SUB 180: GO SUB 990: GO SUB 100: GO SUB 160: GO SUB 995: RETURN 
+990 PRINT AT 21,19; FLASH 1;"PLEASE WAIT": RETURN 
+995 PRINT AT 21,19; FLASH 0;" EDIT-MENU ": RETURN 
+1000 REM set up display
+1010 POKE 23693,56: CLS 
+1020 PRINT AT 1,1;" !""#$%&'()*+,-./0123456789:;<"
+1025 PRINT AT 2,1;"=>?\@ABCDEFGHIJKLMNOPQRSTUVWXY"
+1030 PRINT AT 3,1;"Z[\\]^_\`abcdefghijklmnopqrstuv"
+1035 PRINT AT 4,1;"wxyz{|}\*"
+1040 PRINT AT 5,2;"2 4 6 8 2 4 6 8"
+1050 PRINT AT 6,22;"\a\b\c\d\e\f\g\h";AT 7,22;"\i\j\k\l\m\n\o\p";AT 8,22;"\q\r\s"
+1055 PLOT 7,0: DRAW 129,0: DRAW 0,128: DRAW -129,0: DRAW 0,-128
+1060 FOR n=2 TO 8 STEP 2: PRINT OVER 1;AT n+5,0;n;AT n+13,0;n;AT n+5,17;n;AT n+13,17;n: NEXT n
+1065 PLOT 72,0: DRAW 0,128: PLOT 7,64: DRAW 128,0
+1070 PRINT AT 11,19;"\a\b";AT 12,19;"\c\d";AT 11,22;"\e\f";AT 12,22;"\g\h";AT 11,25;"\i\j";AT 12,25;"\k\l";AT 11,28;"\m\n";AT 12,28;"\o\p"
+1075 PRINT AT 14,19;"\q\r";AT 15,19;"\s"
+1080 PRINT AT 14,23;"GRAPHIC";AT 15,23;USR "a";AT 17,19;"CHARACTER";AT 18,19;"SET :";base
+1085 PRINT AT 20,19;"\*ROBSOFT 89";AT 21,20;"EDIT-MENU"
+1090 PLOT 151,129: DRAW 19,0: DRAW 0,-19: DRAW -19,0: DRAW 0,19
+2000 RETURN 
+4800 REM change charset
+4810 INPUT "Character set address?:";charradd
+4815 IF charradd>64767 OR charradd<16384 THEN GO TO 4810
+4820 LET address=23606: LET value=charradd-256
+4825 GO SUB 4950: LET base=charradd: RETURN 
+4850 REM change udg
+4855 INPUT "UDG set address?:";udgset
+4860 IF udgset<16384 OR udgset>65383 THEN GO TO 4855
+4865 LET value=udgset
+4870 LET address=23675
+4875 GO SUB 4950: RETURN 
+4900 REM call main bit
+4905 GO SUB 4820
+4910 GO SUB 1000: GO SUB 795: GO SUB 800
+4920 GO TO 5000
+4950 REM double poke
+4955 LET msb=INT (value/256)
+4960 LET lsb=value-(256*msb)
+4965 POKE address,lsb: POKE address+1,msb
+4970 RETURN 
+5000 REM menu
+5005 POKE 23606,0: POKE 23607,60
+5010 POKE 23693,48: CLS : BORDER 6: POKE 23693,120
+5011 FOR n=2 TO 15: PRINT AT n,4;TAB 27: NEXT n
+5012 PLOT 32,159: DRAW 184,0: DRAW 0,-112: DRAW -184,0: DRAW 0,112
+5015 PRINT AT 14,5;"CHARS:";base;AT 14,17;"UDG:";USR "a"
+5020 PRINT AT 3,5;"CHAR-PROG MENU"
+5025 PRINT AT 5,5;"1 change CHARS";AT 6,5;"2 change UDG";AT 7,5;"3 edit chars/UDGs";AT 8,5;"4 save UDGs";AT 9,5;"5 save charset";AT 10,5;"6 load UDGs";AT 11,5;"7 load charset";AT 12,5;"8 suite package menu"
+5030 LET k$=INKEY$: IF k$="" THEN GO TO 5030
+5031 IF k$="3" THEN GO SUB 5990: GO TO 4900
+5035 IF K$ ="1" THEN GO SUB 5990: GO SUB 4800: GO TO 5000
+5040 IF K$ ="2" THEN GO SUB 5990: GO SUB 4850: GO TO 5000
+5045 IF K$ ="4" THEN GO SUB 5990: GO TO 6000
+5050 IF K$ ="5" THEN GO SUB 5990: GO TO 6050
+5055 IF K$ ="8" THEN GO SUB 5990: LOAD "disk"
+5060 IF K$ ="6" THEN GO SUB 5990: GO TO 6100
+5065 IF K$ ="7" THEN GO SUB 5990: GO TO 6150
+5070 GO TO 5030
+5500 SAVE "m:picture" SCREEN$ 
+5520 INPUT "character?"; LINE k$
+5530 IF k$="" THEN LOAD "m:picture" SCREEN$ : RETURN 
+5540 CLS : FOR n=0 TO 10: FOR m=0 TO 31: PRINT k$;: NEXT m: NEXT n
+5545 PRINT AT 13,2;"character=";k$;" code="; CODE k$
+5550 GO TO 5520
+5990 PRINT AT 4+VAL k$,5; FLASH 1;k$: RETURN 
+6000 REM save udg
+6010 GO SUB 7000
+6020 SAVE f$ CODE (USR "a"),152
+6025 GO TO 5000
+6050 REM save charset
+6060 GO SUB 7000
+6065 SAVE f$ CODE base,768
+6070 GO TO 5000
+6110 GO SUB 7000
+6115 LOAD f$ CODE USR "a",152
+6120 GO TO 5000
+6160 GO SUB 7000
+6165 LOAD f$ CODE base,768
+6170 GO TO 5000
+7000 INPUT "Filename?:";f$
+7010 IF f$="" OR LEN f$>12 THEN GO TO 7000
+7020 RETURN 
+9010 LET x=1: LET y=1: LET p=x: LET q=y
+9030 DIM c(16,16)
+9040 LET base=PEEK 23606+256*PEEK 23607
+9050 LET charradd=base+256
+9060 GO TO 5000
