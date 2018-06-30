@@ -3,3 +3,4 @@ Z80/RNG.tap
 Artist/Source/INPUTS.symbol.txt
 esxDOS/errors.inc
 esxDOS/esxdos_api.txt
+*.sublime-workspace
