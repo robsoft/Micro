@@ -5,5 +5,6 @@ esxDOS/errors.inc
 esxDOS/esxdos_api.txt
 *.sublime-workspace
 Pico-8/carts/sandpit/pumpkin.p8
+Pico-8/carts/archive/
 Pico-8/.DS_Store
 .DS_Store
