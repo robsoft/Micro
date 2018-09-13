@@ -1,16 +1,14 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
--- oh mummy
--- adam miller & rob uttley
+-- pic-oh mummy
+-- road software
 
 function _init()
   init_system()
   
-  --scn_timer=1
-  --setup_menu()
-  --scn=scr_splash
-  setup_splash()
+  scn_timer=1
+  setup_menu()
 end
 
 
@@ -23,7 +21,6 @@ function _draw()
   elseif (scn==scr_settings) then draw_settings()
   elseif (scn==scr_new_pyramid) then draw_new_pyramid()
   elseif (scn==scr_enterhighscore) then draw_enterhighscore()
-  elseif (scn==scr_splash) then draw_splash()
   else draw_instr()
   end
 end
@@ -38,7 +35,6 @@ function _update()
   elseif (scn==scr_settings) then upd_settings()
   elseif (scn==scr_new_pyramid) then upd_new_pyramid()
   elseif (scn==scr_enterhighscore) then upd_enterhighscore()
-  elseif (scn==scr_splash) then upd_splash()
   else upd_instructions()
   end
 end
@@ -100,7 +96,7 @@ function draw_game()
   
   if game_paused then
     rectfill(0,46,128,82,0)
-    cnt_txt("paused", 62, 15)
+    cnt_txt("paused", 62, 11)
   end
 
 end
@@ -378,26 +374,7 @@ end
 
 
 
-function upd_splash()
-  scn_timer+=1
-  if (btnp(5,0) or (scn_timer>400)) then
-    setup_menu()
-  end
-end
 
-function draw_splash()
-  cls()
-  -- moving very slightly to the left to centre the logo better
-  map(16,0,-2,0,16,16)
-  cnt_txt("proudly presents",76,6)
-  cnt_txt("pic-oh mummy",88,15)
-  cnt_txt("road software 2018",108,5)
-end
-
-function setup_splash()
-  scn_timer=1
-  scn=scr_splash
-end
 
 function upd_gameover()
   -- x gone from not-pressed to being pressed?
@@ -417,18 +394,18 @@ end
 
 function draw_gameover()
   cls()
-  title("g a m e   o v e r",15)
+  title("g a m e   o v e r",8)
   press_x()
   local xpos=12
   print("score              : "..padl(tostr(p.score),5,"0"),xpos,32,10)
 
-  print("pyramids           : "..padl(tostr(p.pcount),5),xpos,42,15)
-  print("level              : "..padl(tostr(p.level),5),xpos,48,15)
-  print("steps taken        : "..padl(tostr(p.steps),5),xpos,54,15)
-  print("mummies vanquished : "..padl(tostr(p.mmycount),5),xpos,60,15)
-  print("men consumed       : "..padl(tostr(p.lostcount),5),xpos,66,15)
-  print("scrolls used       : "..padl(tostr(p.scount),5),xpos,72,15)
-  print("treasures found    : "..padl(tostr(p.tcount),5),xpos,78,15)
+  print("pyramids           : "..padl(tostr(p.pcount),5),xpos,42,6)
+  print("level              : "..padl(tostr(p.level),5),xpos,48,6)
+  print("steps taken        : "..padl(tostr(p.steps),5),xpos,54,6)
+  print("mummies vanquished : "..padl(tostr(p.mmycount),5),xpos,60,6)
+  print("men consumed       : "..padl(tostr(p.lostcount),5),xpos,66,6)
+  print("scrolls used       : "..padl(tostr(p.scount),5),xpos,72,6)
+  print("treasures found    : "..padl(tostr(p.tcount),5),xpos,78,6)
 
   -- beaten the lowest high score?
   if (p.score>high[#high].score) then
@@ -440,13 +417,13 @@ end
 
 function draw_menu()
   cls()
-  title("o h   m u m m y!",15)
+  title("p i c - o h   m u m m y!",8)
   press_x()
 
   local xpos=26
-  high_line("", " play  game ", xpos, 38, menu_line==1, 10, 15)
-  high_line("", "instructions", xpos, 58, menu_line==2, 10, 15)
-  high_line("", "  settings  ", xpos, 78, menu_line==3, 10, 15)
+  high_line("", " play  game ", xpos, 38, menu_line==1, 10, 12)
+  high_line("", "instructions", xpos, 58, menu_line==2, 10, 12)
+  high_line("", "  settings  ", xpos, 78, menu_line==3, 10, 12)
 
   for men in all(c_ply) do
     spr(pright[men.frame], men.x, men.y)
@@ -549,13 +526,13 @@ end
 
 function draw_settings()
   cls()
-  title("s e t t i n g s",15)
+  title("s e t t i n g s",8)
   press_x()
   local xpos=26
-  high_line("game speed :",speeds[game_speed], xpos, 28, set_line==1, 10, 15)
-  high_line("difficulty :",diffs[game_diff], xpos, 48, set_line==2, 10, 15)
-  high_line("game music :",bool_as_switch(game_music), xpos, 68, set_line==3, 10, 15)
-  high_line("game sound :",bool_as_switch(game_sound), xpos, 88, set_line==4, 10, 15)
+  high_line("game speed :",speeds[game_speed], xpos, 28, set_line==1, 10, 12)
+  high_line("difficulty :",diffs[game_diff], xpos, 48, set_line==2, 10, 12)
+  high_line("game music :",bool_as_switch(game_music), xpos, 68, set_line==3, 10, 12)
+  high_line("game sound :",bool_as_switch(game_sound), xpos, 88, set_line==4, 10, 12)
 end
 
 
@@ -610,7 +587,6 @@ function upd_settings()
     -- wait until not pressed
     while (btn(5,0)) do
     end
-    save_highs()
     scn_timer=1
     setup_menu()
   end
@@ -619,7 +595,7 @@ end
 
 function draw_instr()
   cls()
-  title("i n s t r u c t i o n s",15)
+  title("i n s t r u c t i o n s",8)
   press_x()
 
   -- adam this isn't pretty but hopefully it will make sense!
@@ -668,7 +644,7 @@ end
 
 function draw_highss()
   cls()
-  title("o h   m u m m y!",15)
+  title("p i c - o h   m u m m y!",8)
   press_x()
 
   cnt_txt("todays best",20,6)
@@ -676,13 +652,13 @@ function draw_highss()
   print("lvl",48,32,5)
   print("explorer",72,32,5)
   local yline=42
-  for x=1,5 do
+  for x=1,10 do
     score=high[x]
     print(padl(tostr(x),2),5,yline,5)
     print(padl(tostr(score.score),5,"0"),20,yline,6)
     print(score.level,56,yline,6)
     print(score.name,72,yline,6)
-    yline=yline+8
+    yline=yline+6
   end
 end
 
@@ -700,14 +676,14 @@ end
 
 function draw_new_pyramid()
   cls()
-  title("o h   m u m m y!",15)
-  cnt_txt("!!  s t o p   p r e s s  !!",32,4)
-  cnt_txt("british museum today announced",52,15)
-  cnt_txt("successful excavation of ancient",58,15)
-  cnt_txt("egyptian pyramid.",64,15)
+  title("p i c - o h   m u m m y!",8)
+  cnt_txt("!!  s t o p   p r e s s  !!",32,10)
+  cnt_txt("british museum today announced",52,6)
+  cnt_txt("successful excavation of ancient",58,6)
+  cnt_txt("egyptian pyramid.",64,6)
 
-  cnt_txt("leader of the team given",78,5)
-  cnt_txt(pyrline,84,5)
+  cnt_txt("leader of the team given",78,9)
+  cnt_txt(pyrline,84,9)
   press_x()
 end
 
@@ -724,7 +700,7 @@ end
 
 function draw_enterhighscore()
   cls()
-  title("n e w   h i g h s c o r e!",15)
+  title("n e w   h i g h s c o r e!",8)
   cnt_txt("enter your name",20,6)
 
   print(">"..p.hname, 44,28,10)
@@ -769,7 +745,6 @@ function upd_enterhighscore()
         high_cp=0
       elseif high_sind==6 then -- end
         input_hiscore()
-        save_highs()
         scn=scr_highss
       end
     else
@@ -793,7 +768,7 @@ function hiscore_helper(highline, ypos)
     if (highline==high_sl) and (ind==high_sind) then
       print(">"..sym.."<", xpos + (20*(ind-1)), ypos, 10)
     else
-      print(" "..sym.." ", xpos + (20*(ind-1)), ypos, 15)
+      print(" "..sym.." ", xpos + (20*(ind-1)), ypos, 12)
     end    
   end
 end
@@ -808,11 +783,11 @@ end
 
 function input_hiscore()
   -- pop through the table, inserting the high score in the right place
-  for x=1,5 do
+  for x=1,10 do
     if high[x].score<p.score then
       -- bubble them down
-      if x<5 then
-        for y=5,max(x,2),-1 do
+      if x<10 then
+        for y=10,x,-1 do
           high[y].score=high[y-1].score
           high[y].level=high[y-1].level
           high[y].name=high[y-1].name
@@ -1259,12 +1234,6 @@ end
 
 
 function init_system()
-  cartdata("road_software_picoh_mummy_internalv01")
-  menuitem(4,"reset high scores",function() clear_highs() end)
-  store_flag=48  -- increement/change this to cause it to not see saved data
-
-  create_ascii()
-
   -- animation frames
   -- player
   pright={2,1,1,2,2,1,1,2}
@@ -1308,7 +1277,6 @@ function init_system()
   scr_instructions=6
   scr_new_pyramid=7
   scr_enterhighscore=8
-  scr_splash=9
 
   -- used for tracking current scn, frame timers etc
   scn=scr_menu
@@ -1330,7 +1298,12 @@ function init_system()
   diffs[1]="easy"
   diffs[2]="normal"
   diffs[3]="hard"
-  diffs[4]="oh mmy!"
+  diffs[4]="oh mummy"
+
+  game_speed=2
+  game_diff=2
+  game_sound=true
+  game_music=true
 
   -- sfx constants
   sfx_treasure=4
@@ -1369,14 +1342,12 @@ function init_system()
   -- where does the play area start, basically?
   map_ofx=3
   map_ofy=4
-  setup_highhs()
-  --clear_highs()
-  load_highs()
+  setup_highs()
 
   instr_pc=9
   reset_instructions()
 
-  if (game_music) music(0)
+  music(0)
 end
 
 
@@ -1391,115 +1362,16 @@ function create_chest_array()
 end
 
 
-function load_highs()
-  -- ever been saved?
-  if dget(0)!=store_flag then
-    clear_highs()
-    return
-  end
-
+function setup_highs()
   high={}
-  for x=1,5 do
+  for x=1,10 do
     score={}
-    score.score=0
-    score.level=1
-    score.name="        "
-    add(high,score)
-  end
-  game_sound=num_to_bool(dget(1))
-  game_music=num_to_bool(dget(2))
-  game_diff=dget(3)
-  game_speed=dget(4)
-
-  ofs=5
-  for x=0,4 do
-    tstr=""
-    for y=0,7 do
-      f=dget(ofs+(y+(x*12)))
-      tstr=tstr..chr(f) 
-    end
-    high[1+x].name=tstr
-    high[1+x].level=dget(ofs+(8+(x*12)))
-    high[1+x].score=dget(ofs+(9+(x*12)))
-  end
-
-end
-
-
-function create_ascii()
-  chars=" !\"#$%&'()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-  -- '
-  s2c={}
-  c2s={}
-  for i=1,95 do
-   c=i+31
-   s=sub(chars,i,i)
-   c2s[c]=s
-   s2c[s]=c
-  end
-end
-
-function chr(i)
- return c2s[i]
-end
-
-function ord(s,i)
- return s2c[sub(s,i or 1,i or 1)]
-end
-
--- 8=name 1=level 3=score
-function save_highs()
-  dset(0,store_flag) -- indicate we've saved data
-  dset(1,bool_to_num(game_sound))
-  dset(2,bool_to_num(game_music))
-  dset(3,game_diff)
-  dset(4,game_speed)
-
-  ofs=5
-  for x=0,4 do
-    tstr=high[1+x].name.."        "  -- need to have 8 chars
-    tstr=sub(tstr,1,9)
-    for y=0,7 do
-      print(ofs+(y+(x*12)), sub(tstr,1+y,1+y))
-      dset(ofs+(y+(x*12)), ord(tstr,1+y))
-    end
-    dset(ofs+(8+(x*12)), high[1+x].level)
-    dset(ofs+(9+(x*12)), high[1+x].score)
-  end
-end
-
-function bool_to_num(bool)
-  if bool then return 1
-  else return 0
-  end
-end
-
-function num_to_bool(num)
-  return (num==1)
-end
-
-
-function clear_highs()
-  cls()
-  high={}
-  for x=1,5 do
-    score={}
-    score.score=100 + ((5-x)*50)
+    score.score=100 + ((10-x)*50)
     score.level = flr(score.score/100)
     score.name="king tut"
     add(high,score)
-    --print(high[x].score)
   end
-  game_speed=2
-  game_diff=2
-  game_sound=true
-  game_music=true
-  
-  save_highs()
-end
 
-
-function setup_highhs()
   highh={}
   tmpline={"a","b","c","d","e","f"}
   add(highh,tmpline)
@@ -1517,8 +1389,8 @@ function setup_highhs()
   add(highh,tmpline)
   tmpline={"spc","<",">","del","clr","end"}
   add(highh,tmpline)
-end
 
+end
 
 -- special version that works with the global varialbe instr_y
 function instr_text(text,colour)
@@ -1527,91 +1399,182 @@ function instr_text(text,colour)
   instr_y+=6 -- move to next line
 end
 
-
 -- top and bottom lines are off limits (title & press x bit)
 -- set instr_y to be your starting y line
 -- use instr_text(string,colour) to draw centred text at 'ypos', it will inc ypos after the call to save you messing
 -- use normal print() and spr() commands for other stuff
 function draw_instrp_01()
   instr_y=18
-  instr_text("you have been appointed head of",15)
-  instr_text("an archaeological expedition, ",15)
-  instr_text("sponsored by the british museum,",15)
-  instr_text("and have been sent to egypt to ",15)
-  instr_text("explore newly found pyramids. ",15)
+  instr_text("you have been appointed head of",6)
+  instr_text("an archaeological expedition, ",6)
+  instr_text("sponsored by the british museum,",6)
+  instr_text("and have been sent to egypt to ",6)
+  instr_text("explore newly found pyramids. ",6)
   instr_y+=6 -- make a blank line
-  instr_text("your party consists of 5",15)
-  instr_text("members.",15)
-  instr_y+=6 -- make a blank line
-  instr_text("your task is to enter the 5",15)
-  instr_text("levels of each pyramid, and",15)
-  instr_text("recover from them 5 royal",15)
-  instr_text("mummies and as much treasure",15)
-  instr_text("as you can.",15)
+  instr_text("your party consists of 5 members",6)
+  instr_y+=3
+  spr(1,60, instr_y)
+  instr_y+=12 -- skip 2 lines
+  instr_text("your task is to enter the 5",6)
+  instr_text("levels of each pyramid, and",6)
+  instr_text("recover from them 5 royal",6)
+  instr_text("mummies and as much treasure",6)
+  instr_text("as you can.",6)
+  instr_y+=3
+  spr (23,50, instr_y)
+  spr (38,70, instr_y)
 end
 
 function draw_instrp_02()
   instr_y=18
-  instr_text("each level has been partly",15)
-  instr_text("uncovered by local workers and",15)
-  instr_text("it's up to your team to finish",15)
-  instr_text("the dig. unfortunately, the",15)
-  instr_text("workers aroused guardians left",15)
-  instr_text("behind by the ancient pharoahs",15)
-  instr_text("to protect their tombs.",15)
-
-  -- we want to make this right-facing mmy blue not yellow
-  pal(mum_col, mum_tracker_col) -- swap all colour 'mum_col' to 'mum_tracker_col'
-  spr(10, 60, instr_y) -- draw sprite n at x,y
+  instr_text("each level has been partly",6)
+  instr_text("uncovered by local workers and",6)
+  instr_text("it's up to your team to finish",6)
+  instr_text("the dig. unfortunately, the",6)
+  instr_text("workers aroused guardians left",6)
+  instr_text("behind by the ancient pharoahs",6)
+  instr_text("to protect their tombs.",6)
+  instr_y+=6
+  instr_text("each level has 2 guardian",6)
+  instr_text("mummies, one lies hidden while",6)
+  instr_text("the other one searches for",6)
+  instr_text("intruders.",6)
+  instr_y+=3
+  spr(9, 50, instr_y)
+  pal(mmy_col, mmy_tracker_col) -- swap all colour 'mmy_col' to 'mmy_tracker_col'
+  spr(9, 70, instr_y) 
   pal() -- reset the pallete now
-  instr_y+=12 -- move on a line
-
-  instr_text("each level has 2 guardian",15)
-  instr_text("mummies, one lies hidden while",15)
-  instr_text("the other one searches for",15)
-  instr_text("intruders.",15)
 end;
 
 function draw_instrp_03()
   instr_y=18
-  instr_text("the partly excavated levels are",15)
-  instr_text("in the form of a grid made up of",15)
-  instr_text("20 'boxes'. to uncover a 'box',",15)
-  instr_text("move your team along the 4 sides",15)
-  instr_text("of the box from each corner to",15)
-  instr_text("the next.",15)
-
+  instr_text("the partly excavated levels are",6)
+  instr_text("in the form of a grid made up of",6)
+  instr_text("20 'boxes'. to uncover a 'box',",6)
+  instr_text("move your team along the 4 sides",6)
+  instr_text("of the box from each corner to",6)
+  instr_text("the next.",6)
+  instr_y+=3
+  spr(44,44,instr_y)
   spr(45,60,instr_y)
-  instr_y+=12 -- need to skip 2 lines
-
-  instr_text("not all boxes need to be",15)
-  instr_text("uncovered to enable you to go",15)
-  instr_text("through the exit and into the",15)
-  instr_text("next level.",15)
-
-  -- etc etc etc - you can use print(text,x,y,colour) too if that's better for you
+  spr(46,76,instr_y)
+  instr_y+=12
+  instr_text("not all boxes need to be",6)
+  instr_text("uncovered to enable you to go",6)
+  instr_text("through the exit and into the",6)
+  instr_text("next level...",6)
 end
 
 function draw_instrp_04()
---  "each level contains, 10 treasure boxes, 6 empty boxes, a royal mmy, a guardian mmy, a key and a scroll. if you uncover the box holding the guardian mmy, it will dig its way out and pursue you. being caught by a guardian mmy kills one member of your team and the mmy, unless you have uncovered the scroll."
+  instr_y=18
+  instr_text("each level contains:",6)
+  instr_y+=6
+  instr_text("10 treasure boxes",6)
+  instr_text("6 empty boxes",6)
+  instr_text("a royal mummy, a guardian mummy",6)
+  instr_text("a key and a scroll.",6)
+  instr_y+=3
+  spr(38,28,instr_y)
+  spr(39,44,instr_y)
+  spr(23,60,instr_y)
+  spr(21,76,instr_y)
+  spr(22,92,instr_y)
+  instr_y+=12
+  instr_text("if you uncover the box holding",6)
+  instr_text("the guardian mummy, it will dig",6)
+  instr_text("its way out and pursue you",6)
+  instr_y+=6
+  instr_text("being caught by a guardian mummy",6)
+  instr_text("kills one member of your team",6)
+  instr_text("and the mummy, unless you have",6)
+  instr_text("uncovered the scroll",6)
 end
+
 function draw_instrp_05()
---  "the magic scroll allows you to be caught by a guardian, without any harm to your team. the scroll works only on the level on which found, it will only destroy 1 guardian. there are two ways to gain points, one is by uncovering the royal mmy the other, by uncovering treasure."
+  instr_y=18
+  instr_text("the magic scroll allows you to",6)
+  instr_text("be caught by a guardian, without",6)
+  instr_text("any harm to your team",6)
+  instr_y+=3
+  spr(22,50,instr_y)
+  spr(57,70,instr_y)
+  instr_y+=12
+  instr_text("the scroll works only on",6)
+  instr_text("the level on which found",6)
+  instr_text("it will only destroy 1 guardian",6)
+  instr_y+=6
+  instr_text("there are 2 ways to gain points:",6)
+  instr_y+=6
+  instr_text("uncovering the royal mummy",6)
+  instr_text("and by uncovering treasure.",6)
+  instr_y+=3
+  spr(23,50,instr_y)
+  spr(38,70,instr_y)
 end
+
 function draw_instrp_06()
---  "when the boxes holding the key and the royal mmy have been uncovered, you will be able to leave the level. any remaining guardians will be able to follow you onto the next level. after completing all 5 levels of a pyramid you will, when you leave the fifth level, move to level 1, of the next pyramid."
+  instr_y=18
+  instr_text("when the boxes holding the key",6)
+  instr_text("and the royal mummy have been",6)
+  instr_text("uncovered, you will be able",6)
+  instr_text("to leave the level",6)
+  instr_y+=3
+  spr(21,50,instr_y)
+  spr(23,70,instr_y)
+  instr_y+=12
+  instr_text("remaining guardians will be",6)
+  instr_text("able to follow you onto",6)
+  instr_text("the next level.",6)
+  instr_y+=6
+  instr_text("after completing all 5 levels",6)
+  instr_text("of a pyramid you will, when",6)
+  instr_text("you leave the fifth level,",6)
+  instr_text("move to level 1, of the",6)
+  instr_text("next pyramid.",6)
 end
+
 function draw_instrp_07()
---  "when you have completed a pyramid, your success will be rewarded either by bonus points or the arrival of an extra team member. the guardians in the next pyramid, having been warned by those you have escaped from, will be more alert, so it will pay to be more careful."
+  instr_y=18
+  instr_text("when you have completed a",6)
+  instr_text("pyramid, your success will",6)
+  instr_text("be rewarded either by",6)
+  instr_text("bonus points or the arrival",6)
+  instr_text("of an extra team member.",6)
+  instr_y+=3
+  spr(1,60,instr_y)
+  instr_y+=12
+  instr_text("the guardians in the next",6)
+  instr_text("pyramid, having been warned",6)
+  instr_text("by those you've escaped",6)
+  instr_text("from, will be more alert, so it",6)
+  instr_text("will pay to be more careful",6)
+  instr_y+=3
+  spr(42,44,instr_y)
+  spr(43,60,instr_y)
+  spr(41,76,instr_y)
 end
+
 function draw_instrp_08()
---  "you can control your team by using cursor keys. the game has 4 skill levels, these determine how 'clever' the guardians are at the beginning of a game. you may choose between 3 different speed levels, from moderate to murderous."
+  instr_y=18
+  instr_text("you can control your team using",6)
+  instr_text("cursor keys.",6)
+  instr_y+=6
+  instr_text("the game has 4 skill levels",6)
+  instr_text("these determine how 'clever'",6)
+  instr_text("the guardians are at the.",6)
+  instr_text("beginning of a game",6)
+  instr_text("easy, normal, hard, and",6)
+  instr_text("oh mummy",6)
+  instr_y+=6
+  instr_text("you may choose 3 speed levels",6)
+  instr_text("from moderate to murderous",6)
 end
+
 function draw_instrp_09()
---  "may ankh-sun-ahmun guide your steps ... "
+  instr_y=60
+  instr_text("may ankh-sun-ahmun",6)
+  instr_text("guide your steps ...",6)
 end
-
-
 
 __gfx__
 0000000000ccc00000ccc000000000000000000000000000000000000000000000000000000aa000000aa0000000000011111111111111111111111111111111
@@ -1646,73 +1609,25 @@ __gfx__
 0000000000cccc0000cccc0000cccc00000000000000000011dddd11000000000000400000aaaa0000aaaa0000aaaa003333333322222222ddddddddffffffff
 0000000000c0099009900c0000c00c00000000000000000011d11d11000000000004400000a00aa00aa00a0000a00a003333333322222222ddddddddffffffff
 0000000009900000000009900990099000000000000000001dd11dd100000000000000000aa0000000000aa00aa00aa03333333322222222ddddddddffffffff
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001155551100000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000155d551100000000000000000000000000000
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000155ddd5111100000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001155d55111100000000000000000000000000
-00000000000000000000000000000000000000000000001110000000000000000000000000000000000000000000115551111100000000000000000000000000
-00000000000000000000000000000000000000000000111511100000000000000000000001110000000000000000011111111100000000000000000000000000
-00000000000000000000000000000000000000000001155555100000000000000000000111511100000000000000000111111100000000000000000000000000
-0000000000000000000000000000001111111001100115dddd551110000000000001111555555111000000001111111111111100000000000000000000000000
-0000000000000000000000000000013333333133100115dddddd333100000000013333ddddddddd3100000133333333333333300000000000000000000000000
-000000000000000000000000000001dddddddddd10005dddddddddddd10000001ddddddddddddddd100001ddddddddddddddd300000000000000000000000000
-000000000000000000000000000001cccccccccc1001dddddddddddccd000001ccdddddddddddddd10001ddddddddddddddddd00000000000000000000000000
-000000000000000000000000000001cccccccccc100dcddddcccdcccccd0001cccccccdddddddddc1001cccccccccccccccccc00000000000000000000000000
-000000000000000000000000000001cccccccccc501dddddddd101ccccc100dcccccccd101ddddcc100dcccccccc500ccccccc00000000000000000000000000
-000000000000000000000000000001666666666d10d6666666100166666500666666661001666666100666666665000666666600000000000000000000000000
-00000000000000000000000000000577776676000067777775000d77677d017777666d0005777767501777777760000777666600000000000000000000000000
-000000000000000000000000000005dd51115100005d6666d0000d51115501d6d51110000567611100166dd677d00007776dd100000000000000000000000000
-000000000000000000000000000001111111100000011111000001111111001111111000001111110001111156100005dd111100000000000000000000000000
-00000000000000000000000000000011111110000001111110001122ddd551111111100011111111000111111100001111111100000000000000000000000000
-000000000000000000000000000000111111100000011111111112deeeeed1111111111111111111000111111111111111111100000000000000000000000000
-00000000000000000000000000000011111110000000111111112deeeeeed5111111111111111111000111111111222211111100000000000000000000000000
-0000000000000000000000000000012222222000000012222222eeee7eeed1122222222222222222111122222222ddd222222200000000000000000000000000
-000000000000000000000000000001ddddddd000000002ddddee6ee77ee6d511deeeeeedd5de6eee115dddeeeeee66ed2ddddd00000000000000000000000000
-00000000000000000000000000000566666665100015ddd67777ee776ee766d556777776d6eee667dd6e676e6776eeee5d666600000000000000000000000000
-000000000000000000000000000000000001ddd115d6eee6ddeeeeeeeeeeeee66ee66e6d6eeeeee6dd6ee6ee67ee67eed1000000000000000000000000000000
-000000000000000000000000000000000005eded5dedddde66eddeeeeeeeeee76ee7ee76ee776ee6d6ee77ee76e66ee6d5100000000000000000000000000000
-000000000000000000000000000000000005ede6dedee6dd67ede77ede67eee7ee66ee7eee67eee666ee7ee67eeeee76ee100000000000000000000000000000
-000000000000000000000000000000000015dede7ed667ed6eed6d6ee766ee76ee7ee66ee776ee676ee76e66eeee776eed100000000000000000000000000000
-000000000000000000000000000000000555d6edede766dddede6deee7eeee7eee7eeeeee66eeeeeeee7eeee66eeeee665500000000000000000000000000000
-0000000000000000000000000000000001ddd6ededd6eedeee2eddeeeeeeeeeeeeee6e6eeeee6eeeee6deee6d6eeeeed10000000000000000000000000000000
-000000000000000000000000000003333deeeeededdddd667dd65dedde66eee7eee6ddd66e6dd66666d5ddd555dddd5533333330000000000000000000000000
-0000000000000000000000000003333335deddee66eee6d6eded55d66dddd6ddddd53335dd555555553333333335533333333333300000000000000000000000
-00000000000000000000000000333333335d66dd5dddd556ed653355553355333333333333333333333333333333333333333333330000000000000000000000
-00000000000000000000000000000000000011000000001dde500000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000033333333333333333333333333ddd533333333333333333333333333333333333333333333333333333333333000000000000000000
-00000000000000000000333333333333333333333333333353333333333333333333333333333333333333333333333333333333333333330000000000000000
-00000000000000000003333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333000000000000000
 __gff__
 0000000000000000020000000000000000000000010101010200000000000000000000000101010102000000010101010000000000000100020000000103010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
-1414141414141414141414141414141440404040404040404040404040404040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414141414141414141414141414141440000000400054004040404040404040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414141414141414140000000000141440000000000054000040405b5c000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-14141414141414371414141414141414400000636465666768696a6b6c5d0040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-14141437373737373737373737371414404000737475767778797a7b7c6d0040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-14141437163715372737273724371414404000838485868788898a8b8c000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-14141437373737373737373737371414400092939495969798999a9b9c9d9e40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414143724371537273727372737141440000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414143737373737373737373737141440000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414143724372437273717372437141440000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414143737373737373737373737141440000040000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414143724372437243724372437141440004040000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414143737373737373737373737141440404040400000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414141414141414141414141414141440404040404040404040000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1414141414141414141414141414141440404040404040404040404040404040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414141414141414141414141414141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414141414141414141414141414141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414141414141414140000000000141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414141414141437141414141414141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143737373737373737373737141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143716371537273727372437141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143737373737373737373737141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143724371537273727372737141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143737373737373737373737141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143724372437273717372437141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143737373737373737373737141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143724372437243724372437141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414143737373737373737373737141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414141414141414141414141414141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1414141414141414141414141414141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1414141414141414141414141414141400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __sfx__
 000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

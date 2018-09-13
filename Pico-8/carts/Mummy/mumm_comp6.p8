@@ -1,15 +1,12 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
--- oh mummy
--- adam miller & rob uttley
+-- pic-oh mummy
+-- road software
 
 function _init()
   init_system()
   
-  --scn_timer=1
-  --setup_menu()
-  --scn=scr_splash
   setup_splash()
 end
 
@@ -279,7 +276,15 @@ function check_mmy_collision(mmy)
     testy=p.y
   end
 
-  if ((mmy.x==testx) and (mmy.y==testy)) then 
+  if mmy.frame<4 then
+    mumx=mmy.oldx
+    mumy=mmy.oldy
+  else
+    mumx=mmy.x
+    mumy=mmy.y
+  end
+
+  if ((mumx==testx) and (mumy==testy)) then 
     -- mmy always dies
     mmy.active=false
     p.mmycount=safe_inc(p.mmycount)
@@ -298,6 +303,7 @@ function check_mmy_collision(mmy)
     end
   end 
 end
+
 
 
 function validate_mmy_move(mmy)
@@ -377,11 +383,11 @@ function upd_mmy(mmy)
 end
 
 
-
 function upd_splash()
   scn_timer+=1
-  if (btnp(5,0) or (scn_timer>400)) then
+  if (btnp(5,0) or (scn_timer>200)) then
     setup_menu()
+    if (game_music) music(0)
   end
 end
 
@@ -417,18 +423,18 @@ end
 
 function draw_gameover()
   cls()
-  title("g a m e   o v e r",15)
+  title("g a m e   o v e r",8)
   press_x()
   local xpos=12
   print("score              : "..padl(tostr(p.score),5,"0"),xpos,32,10)
 
-  print("pyramids           : "..padl(tostr(p.pcount),5),xpos,42,15)
-  print("level              : "..padl(tostr(p.level),5),xpos,48,15)
-  print("steps taken        : "..padl(tostr(p.steps),5),xpos,54,15)
-  print("mummies vanquished : "..padl(tostr(p.mmycount),5),xpos,60,15)
-  print("men consumed       : "..padl(tostr(p.lostcount),5),xpos,66,15)
-  print("scrolls used       : "..padl(tostr(p.scount),5),xpos,72,15)
-  print("treasures found    : "..padl(tostr(p.tcount),5),xpos,78,15)
+  print("pyramids           : "..padl(tostr(p.pcount),5),xpos,42,6)
+  print("level              : "..padl(tostr(p.level),5),xpos,48,6)
+  print("steps taken        : "..padl(tostr(p.steps),5),xpos,54,6)
+  print("mummies vanquished : "..padl(tostr(p.mmycount),5),xpos,60,6)
+  print("men consumed       : "..padl(tostr(p.lostcount),5),xpos,66,6)
+  print("scrolls used       : "..padl(tostr(p.scount),5),xpos,72,6)
+  print("treasures found    : "..padl(tostr(p.tcount),5),xpos,78,6)
 
   -- beaten the lowest high score?
   if (p.score>high[#high].score) then
@@ -440,13 +446,13 @@ end
 
 function draw_menu()
   cls()
-  title("o h   m u m m y!",15)
+  title("p i c - o h   m u m m y!",8)
   press_x()
 
   local xpos=26
-  high_line("", " play  game ", xpos, 38, menu_line==1, 10, 15)
-  high_line("", "instructions", xpos, 58, menu_line==2, 10, 15)
-  high_line("", "  settings  ", xpos, 78, menu_line==3, 10, 15)
+  high_line("", " play  game ", xpos, 38, menu_line==1, 10, 12)
+  high_line("", "instructions", xpos, 58, menu_line==2, 10, 12)
+  high_line("", "  settings  ", xpos, 78, menu_line==3, 10, 12)
 
   for men in all(c_ply) do
     spr(pright[men.frame], men.x, men.y)
@@ -549,13 +555,13 @@ end
 
 function draw_settings()
   cls()
-  title("s e t t i n g s",15)
+  title("s e t t i n g s",8)
   press_x()
   local xpos=26
-  high_line("game speed :",speeds[game_speed], xpos, 28, set_line==1, 10, 15)
-  high_line("difficulty :",diffs[game_diff], xpos, 48, set_line==2, 10, 15)
-  high_line("game music :",bool_as_switch(game_music), xpos, 68, set_line==3, 10, 15)
-  high_line("game sound :",bool_as_switch(game_sound), xpos, 88, set_line==4, 10, 15)
+  high_line("game speed :",speeds[game_speed], xpos, 28, set_line==1, 10, 12)
+  high_line("difficulty :",diffs[game_diff], xpos, 48, set_line==2, 10, 12)
+  high_line("game music :",bool_as_switch(game_music), xpos, 68, set_line==3, 10, 12)
+  high_line("game sound :",bool_as_switch(game_sound), xpos, 88, set_line==4, 10, 12)
 end
 
 
@@ -619,7 +625,7 @@ end
 
 function draw_instr()
   cls()
-  title("i n s t r u c t i o n s",15)
+  title("i n s t r u c t i o n s",8)
   press_x()
 
   -- adam this isn't pretty but hopefully it will make sense!
@@ -668,21 +674,21 @@ end
 
 function draw_highss()
   cls()
-  title("o h   m u m m y!",15)
+  title("p i c - o h   m u m m y!",8)
   press_x()
 
   cnt_txt("todays best",20,6)
   print("score",20,32,5)
   print("lvl",48,32,5)
   print("explorer",72,32,5)
-  local yline=42
+  local yline=46
   for x=1,5 do
     score=high[x]
     print(padl(tostr(x),2),5,yline,5)
     print(padl(tostr(score.score),5,"0"),20,yline,6)
     print(score.level,56,yline,6)
     print(score.name,72,yline,6)
-    yline=yline+8
+    yline=yline+10
   end
 end
 
@@ -700,14 +706,14 @@ end
 
 function draw_new_pyramid()
   cls()
-  title("o h   m u m m y!",15)
-  cnt_txt("!!  s t o p   p r e s s  !!",32,4)
-  cnt_txt("british museum today announced",52,15)
-  cnt_txt("successful excavation of ancient",58,15)
-  cnt_txt("egyptian pyramid.",64,15)
+  title("p i c - o h   m u m m y!",8)
+  cnt_txt("!!  s t o p   p r e s s  !!",32,10)
+  cnt_txt("british museum today announced",52,6)
+  cnt_txt("successful excavation of ancient",58,6)
+  cnt_txt("egyptian pyramid.",64,6)
 
-  cnt_txt("leader of the team given",78,5)
-  cnt_txt(pyrline,84,5)
+  cnt_txt("leader of the team given",78,9)
+  cnt_txt(pyrline,84,9)
   press_x()
 end
 
@@ -724,7 +730,7 @@ end
 
 function draw_enterhighscore()
   cls()
-  title("n e w   h i g h s c o r e!",15)
+  title("n e w   h i g h s c o r e!",8)
   cnt_txt("enter your name",20,6)
 
   print(">"..p.hname, 44,28,10)
@@ -793,7 +799,7 @@ function hiscore_helper(highline, ypos)
     if (highline==high_sl) and (ind==high_sind) then
       print(">"..sym.."<", xpos + (20*(ind-1)), ypos, 10)
     else
-      print(" "..sym.." ", xpos + (20*(ind-1)), ypos, 15)
+      print(" "..sym.." ", xpos + (20*(ind-1)), ypos, 12)
     end    
   end
 end
@@ -928,7 +934,20 @@ function setup_lvl_clr()
     ofs=ofs-8
   end
   ofs=ofs-24
+
+
   for i=1,#mummies do
+    -- any emerging mummies we need to carry over?
+    if mummies[i].reveal then
+      mummies[i].frame=1
+      mummies[i].reveal=false
+      mummies[i].active=true
+      mummies[i].x=13
+      mummies[i].y=12
+      mummies[i].dir=dr_left
+      mummies[i].active=true
+    end
+
     if mummies[i].active then
       mum={}
       mum.x=ofs
@@ -1254,7 +1273,6 @@ end
 
 function reset_instructions()
   instr_pg=1
---  textbox(instr_text[instr_pg], instr_x, instr_y, instr_col, instr_width)
 end
 
 
@@ -1322,15 +1340,15 @@ function init_system()
   c_ply={}
   -- overridden by the player if required
   speeds={}
-  speeds[1]="slow"
+  speeds[1]="moderate" --"slow"
   speeds[2]="regular"
-  speeds[3]="fast"
+  speeds[3]="murderous" -- "fast"
   
   diffs={}
   diffs[1]="easy"
   diffs[2]="normal"
   diffs[3]="hard"
-  diffs[4]="oh mmy!"
+  diffs[4]="oh mummy!"
 
   -- sfx constants
   sfx_treasure=4
@@ -1376,7 +1394,7 @@ function init_system()
   instr_pc=9
   reset_instructions()
 
-  if (game_music) music(0)
+  --if (game_music) music(0)
 end
 
 
@@ -1534,83 +1552,176 @@ end
 -- use normal print() and spr() commands for other stuff
 function draw_instrp_01()
   instr_y=18
-  instr_text("you have been appointed head of",15)
-  instr_text("an archaeological expedition, ",15)
-  instr_text("sponsored by the british museum,",15)
-  instr_text("and have been sent to egypt to ",15)
-  instr_text("explore newly found pyramids. ",15)
+  instr_text("you have been appointed head of",6)
+  instr_text("an archaeological expedition, ",6)
+  instr_text("sponsored by the british museum,",6)
+  instr_text("and have been sent to egypt to ",6)
+  instr_text("explore newly found pyramids. ",6)
   instr_y+=6 -- make a blank line
-  instr_text("your party consists of 5",15)
-  instr_text("members.",15)
-  instr_y+=6 -- make a blank line
-  instr_text("your task is to enter the 5",15)
-  instr_text("levels of each pyramid, and",15)
-  instr_text("recover from them 5 royal",15)
-  instr_text("mummies and as much treasure",15)
-  instr_text("as you can.",15)
+  instr_text("your party consists of 5 members",6)
+  instr_y+=3
+  spr(1,60, instr_y)
+  instr_y+=12 -- skip 2 lines
+  instr_text("your task is to enter the 5",6)
+  instr_text("levels of each pyramid, and",6)
+  instr_text("recover from them 5 royal",6)
+  instr_text("mummies and as much treasure",6)
+  instr_text("as you can.",6)
+  instr_y+=3
+  spr (23,50, instr_y)
+  spr (38,70, instr_y)
 end
 
 function draw_instrp_02()
   instr_y=18
-  instr_text("each level has been partly",15)
-  instr_text("uncovered by local workers and",15)
-  instr_text("it's up to your team to finish",15)
-  instr_text("the dig. unfortunately, the",15)
-  instr_text("workers aroused guardians left",15)
-  instr_text("behind by the ancient pharoahs",15)
-  instr_text("to protect their tombs.",15)
-
-  -- we want to make this right-facing mmy blue not yellow
-  pal(mum_col, mum_tracker_col) -- swap all colour 'mum_col' to 'mum_tracker_col'
-  spr(10, 60, instr_y) -- draw sprite n at x,y
+  instr_text("each level has been partly",6)
+  instr_text("uncovered by local workers and",6)
+  instr_text("it's up to your team to finish",6)
+  instr_text("the dig. unfortunately, the",6)
+  instr_text("workers aroused guardians left",6)
+  instr_text("behind by the ancient pharoahs",6)
+  instr_text("to protect their tombs.",6)
+  instr_y+=6
+  instr_text("each level has 2 guardian",6)
+  instr_text("mummies, one lies hidden while",6)
+  instr_text("the other one searches for",6)
+  instr_text("intruders.",6)
+  instr_y+=3
+  spr(9, 50, instr_y)
+  pal(mmy_col, mmy_tracker_col) -- swap all colour 'mmy_col' to 'mmy_tracker_col'
+  spr(9, 70, instr_y) 
   pal() -- reset the pallete now
-  instr_y+=12 -- move on a line
-
-  instr_text("each level has 2 guardian",15)
-  instr_text("mummies, one lies hidden while",15)
-  instr_text("the other one searches for",15)
-  instr_text("intruders.",15)
 end;
 
 function draw_instrp_03()
   instr_y=18
-  instr_text("the partly excavated levels are",15)
-  instr_text("in the form of a grid made up of",15)
-  instr_text("20 'boxes'. to uncover a 'box',",15)
-  instr_text("move your team along the 4 sides",15)
-  instr_text("of the box from each corner to",15)
-  instr_text("the next.",15)
-
+  instr_text("the partly excavated levels are",6)
+  instr_text("in the form of a grid made up of",6)
+  instr_text("20 'boxes'. to uncover a 'box',",6)
+  instr_text("move your team along the 4 sides",6)
+  instr_text("of the box from each corner to",6)
+  instr_text("the next.",6)
+  instr_y+=3
+  spr(44,44,instr_y)
   spr(45,60,instr_y)
-  instr_y+=12 -- need to skip 2 lines
-
-  instr_text("not all boxes need to be",15)
-  instr_text("uncovered to enable you to go",15)
-  instr_text("through the exit and into the",15)
-  instr_text("next level.",15)
-
-  -- etc etc etc - you can use print(text,x,y,colour) too if that's better for you
+  spr(46,76,instr_y)
+  instr_y+=12
+  instr_text("not all boxes need to be",6)
+  instr_text("uncovered to enable you to go",6)
+  instr_text("through the exit and into the",6)
+  instr_text("next level...",6)
 end
 
 function draw_instrp_04()
---  "each level contains, 10 treasure boxes, 6 empty boxes, a royal mmy, a guardian mmy, a key and a scroll. if you uncover the box holding the guardian mmy, it will dig its way out and pursue you. being caught by a guardian mmy kills one member of your team and the mmy, unless you have uncovered the scroll."
-end
-function draw_instrp_05()
---  "the magic scroll allows you to be caught by a guardian, without any harm to your team. the scroll works only on the level on which found, it will only destroy 1 guardian. there are two ways to gain points, one is by uncovering the royal mmy the other, by uncovering treasure."
-end
-function draw_instrp_06()
---  "when the boxes holding the key and the royal mmy have been uncovered, you will be able to leave the level. any remaining guardians will be able to follow you onto the next level. after completing all 5 levels of a pyramid you will, when you leave the fifth level, move to level 1, of the next pyramid."
-end
-function draw_instrp_07()
---  "when you have completed a pyramid, your success will be rewarded either by bonus points or the arrival of an extra team member. the guardians in the next pyramid, having been warned by those you have escaped from, will be more alert, so it will pay to be more careful."
-end
-function draw_instrp_08()
---  "you can control your team by using cursor keys. the game has 4 skill levels, these determine how 'clever' the guardians are at the beginning of a game. you may choose between 3 different speed levels, from moderate to murderous."
-end
-function draw_instrp_09()
---  "may ankh-sun-ahmun guide your steps ... "
+  instr_y=18
+  instr_text("each level contains:",6)
+  instr_y+=6
+  instr_text("10 treasure boxes",6)
+  instr_text("6 empty boxes",6)
+  instr_text("a royal mummy, a guardian mummy",6)
+  instr_text("a key and a scroll.",6)
+  instr_y+=3
+  spr(38,28,instr_y)
+  spr(39,44,instr_y)
+  spr(23,60,instr_y)
+  spr(21,76,instr_y)
+  spr(22,92,instr_y)
+  instr_y+=12
+  instr_text("if you uncover the box holding",6)
+  instr_text("the guardian mummy, it will dig",6)
+  instr_text("its way out and pursue you",6)
+  instr_y+=6
+  instr_text("being caught by a guardian mummy",6)
+  instr_text("kills one member of your team",6)
+  instr_text("and the mummy, unless you have",6)
+  instr_text("uncovered the scroll",6)
 end
 
+function draw_instrp_05()
+  instr_y=18
+  instr_text("the magic scroll allows you to",6)
+  instr_text("be caught by a guardian, without",6)
+  instr_text("any harm to your team",6)
+  instr_y+=3
+  spr(22,50,instr_y)
+  spr(57,70,instr_y)
+  instr_y+=12
+  instr_text("the scroll works only on",6)
+  instr_text("the level on which found",6)
+  instr_text("it will only destroy 1 guardian",6)
+  instr_y+=6
+  instr_text("there are 2 ways to gain points:",6)
+  instr_y+=6
+  instr_text("uncovering the royal mummy",6)
+  instr_text("and by uncovering treasure.",6)
+  instr_y+=3
+  spr(23,50,instr_y)
+  spr(38,70,instr_y)
+end
+
+function draw_instrp_06()
+  instr_y=18
+  instr_text("when the boxes holding the key",6)
+  instr_text("and the royal mummy have been",6)
+  instr_text("uncovered, you will be able",6)
+  instr_text("to leave the level",6)
+  instr_y+=3
+  spr(21,50,instr_y)
+  spr(23,70,instr_y)
+  instr_y+=12
+  instr_text("remaining guardians will be",6)
+  instr_text("able to follow you onto",6)
+  instr_text("the next level.",6)
+  instr_y+=6
+  instr_text("after completing all 5 levels",6)
+  instr_text("of a pyramid you will, when",6)
+  instr_text("you leave the fifth level,",6)
+  instr_text("move to level 1, of the",6)
+  instr_text("next pyramid.",6)
+end
+
+function draw_instrp_07()
+  instr_y=18
+  instr_text("when you have completed a",6)
+  instr_text("pyramid, your success will",6)
+  instr_text("be rewarded either by",6)
+  instr_text("bonus points or the arrival",6)
+  instr_text("of an extra team member.",6)
+  instr_y+=3
+  spr(1,60,instr_y)
+  instr_y+=12
+  instr_text("the guardians in the next",6)
+  instr_text("pyramid, having been warned",6)
+  instr_text("by those you've escaped",6)
+  instr_text("from, will be more alert, so it",6)
+  instr_text("will pay to be more careful",6)
+  instr_y+=3
+  spr(42,44,instr_y)
+  spr(43,60,instr_y)
+  spr(41,76,instr_y)
+end
+
+function draw_instrp_08()
+  instr_y=18
+  instr_text("you can control your team using",6)
+  instr_text("cursor keys.",6)
+  instr_y+=6
+  instr_text("the game has 4 skill levels",6)
+  instr_text("these determine how 'clever'",6)
+  instr_text("the guardians are at the.",6)
+  instr_text("beginning of a game",6)
+  instr_text("easy, normal, hard, and",6)
+  instr_text("oh mummy",6)
+  instr_y+=6
+  instr_text("you may choose 3 speed levels",6)
+  instr_text("from moderate to murderous",6)
+end
+
+function draw_instrp_09()
+  instr_y=60
+  instr_text("may ankh-sun-ahmun",6)
+  instr_text("guide your steps ...",6)
+end
 
 
 __gfx__
@@ -1695,7 +1806,7 @@ __gfx__
 00000000000000000000333333333333333333333333333353333333333333333333333333333333333333333333333333333333333333330000000000000000
 00000000000000000003333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333000000000000000
 __gff__
-0000000000000000020000000000000000000000010101010200000000000000000000000101010102000000010101010000000000000100020000000103010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000020000000101010100000000010101010200000001010101000000000101010102000000010101010000000000000100020000000103010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 1414141414141414141414141414141440404040404040404040404040404040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
